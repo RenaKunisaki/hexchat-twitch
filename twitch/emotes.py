@@ -8,6 +8,7 @@ log = twitch.logger.get()
 emotes = {} # emote defs loaded from file
 parsed_emotes = {} # emote defs with IRC formatting applied
 
+# default path for emotes file
 default_path = os.path.join(hexchat.get_info("configdir"),
 	"addons", "twitch", "emotes.json")
 
