@@ -21,13 +21,25 @@ def load(path=None):
 	if path is None: path = default_path
 	log.debug('Loading emotes from file "%s"' % path)
 	
-	with open(path) as f:
-		emotes = json.load(f)
-	log.info('Loaded %d emotes from file "%s"' % (len(emotes), path))
-	
-	for key in emotes:
-		log.debug("'%s' => '%s'" % (key, emotes[key]))
-		parsed_emotes[key] = twitch.irc.format(emotes[key])
+	key = None
+	try:
+		with open(path) as f:
+			emotes = json.load(f)
+		log.info('Loaded %d emotes from file "%s"' % (len(emotes), path))
+		
+		for key in emotes:
+			log.debug("'%s' => '%s'" % (key, emotes[key]))
+			parsed_emotes[key] = twitch.irc.format(emotes[key])
+	except ValueError as ex:
+		if key is None:
+			print("* Error loading emotes: %s" % ex)
+		else:
+			print("* Error loading emotes: %s: %s" % (key, ex))
+		(emotes, parsed_emotes) = ({}, {})
+	except NameError:
+		# seems to be a bug in JSON module that throws this?
+		print("* Error loading emotes: malformed JSON")
+		(emotes, parsed_emotes) = ({}, {})
 	
 	return (emotes, parsed_emotes)
 	
