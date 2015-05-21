@@ -158,7 +158,7 @@ class user(object):
 		badges = []
 		for name, utype in self.getTypes(chan).items():
 			if 'badge' in utype:
-				badges.append(utype['badge'])
+				badges.append(irc.format(utype['badge']))
 		return badges
 		
 		
@@ -167,7 +167,10 @@ class user(object):
 		if msgtype in msg_hilight_types: # if this msgtype can be hilighted
 			for name, utype in self.getTypes(chan).items():
 				if utype.get('hilight', False):
-					return msg_hilight_types[msgtype]
+					tp = msg_hilight_types[msgtype]
+					log.debug("User '%s' channel '%s' msgtype '%s' -> '%s'" %
+						(self.name, chan.name, msgtype, tp))
+					return tp
 		return msgtype
 		
 		
