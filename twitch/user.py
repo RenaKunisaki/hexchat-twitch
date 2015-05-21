@@ -183,10 +183,19 @@ class user(object):
 		return "".join(badges + [irc.color(self.irc_color), self.displayName])
 		
 		
+	# Format message text for displaying in given channel.
+	def formatMessageText(self, chan, text):
+		text = twitch.emotes.insert(text)
+		for name, utype in self.getTypes(chan).items():
+			if 'format' in utype:
+				text = irc.format(utype['format'].format(text))
+		return text
+		
+		
 	# Print user's chat message in channel.
 	def printMessage(self, chan, text, msgtype):
 		chan      = twitch.channel.get(chan)
-		text      = twitch.emotes.insert(text)
+		text      = self.formatMessageText(chan, text)
 		usertypes = twitch.settings.get('usertypes')
 		msgtype   = self.getMsgType(chan, msgtype)
 		chan.getContext().emit_print(msgtype, self.getPrettyNick(chan), text)

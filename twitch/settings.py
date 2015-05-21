@@ -10,25 +10,37 @@ defaults = {
 	# attributes for each user type
 	"usertypes": {
 		"global_mod": {
-			# note we don't need %R in badge if we only set a colour,
+			# Text to prepend to their nick in chat.
+			# Note we don't need %R in badge if we only set a colour,
 			# because the nick will set another colour anyway
 			# (XXX what if we set a background colour?)
-			"badge": "%C(green)⛏", # pickaxe (IIRC what Twitch uses)
+			# We'll also bold their nick.
+			"badge": "%C(green)⛏%B", # pickaxe (IIRC what Twitch uses)
+			
+			# Custom formatting to use for their text. {} is replaced with the
+			# message text; IRC formatting codes (from irc.py) such as %B can
+			# be used. So this default just bolds the text.
+			"format": "%B{}",
 		},
 		"admin": {
-			"badge": "%C(yellow)📛", # literal badge (similar to Twitch icon)
+			"badge": "%C(yellow)📛%B", # literal badge (similar to Twitch icon)
+			"format": "%B{}",
 		},
 		"broadcaster": {
-			"badge": "%C(red)📺", # TV (no good camera symbols)
-			"hilight": True, # highlight this user's messages (by changing
-				# their message type e.g.
-				# 'Channel Message' -> 'Channel Msg Hilight')
+			"badge": "%C(red)📺%B", # TV (no good camera symbols)
+			
+			# Highlight this user's messages (by changing the hexchat message
+			# type e.g. 'Channel Message' -> 'Channel Msg Hilight')
+			# Uses the same spelling of hilight as hexchat does.
+			"hilight": True,
 		},
 		"mod": {
 			"badge": "%C(green)🔪", # knife (Twitch uses sword/lightning bolt)
+			"format": "%B{}"
 		},
 		"staff": {
-			"badge": "%C(pink)🔧", # wrench (what Twitch uses)
+			"badge": "%C(pink)🔧%B", # wrench (what Twitch uses)
+			"format": "%B{}",
 		},
 		"turbo": {
 			"badge": "%C(purple)🗲", # lightning (similar to Twitch icon)
