@@ -3,7 +3,7 @@ import re
 import sys
 import twitch.hook, twitch.jtvmsghandler, twitch.user, twitch.channel
 import twitch.normalize, twitch.commands, twitch.exceptions, twitch.topic
-import twitch.logger
+import twitch.logger, twitch.settings
 from twitch import irc
 log = twitch.logger.get()
 
@@ -96,19 +96,6 @@ def message_cb(word, word_eol, msgtype):
 		message_cb_recurse = False
 
 
-# Your message hook
-def yourmsg_cb(word, word_eol, msgtype):
-	try:
-		if len(word) > 1 and word[1][0] == '.':
-			# eat messages beginning with '.' like Twitch does
-			return hexchat.EAT_ALL
-		else:
-			return message_cb(word, word_eol, msgtype)
-	except:
-		log.exception("Unhandled exception in twitch.yourmsg_cb")
-		return hexchat.EAT_NONE
-
-
 # MODE hook to track mods
 def mode_cb(word, word_eol, msgtype):
 	try:
@@ -198,7 +185,7 @@ def install():
 	twitch.hook.prnt('Channel Action Hilight', message_cb)
 	twitch.hook.prnt('Channel Message',        message_cb)
 	twitch.hook.prnt('Channel Msg Hilight',    message_cb)
-	twitch.hook.prnt('Your Message', yourmsg_cb)
+	twitch.hook.prnt('Your Message',           message_cb)
 	twitch.hook.server('MODE', mode_cb)
 	twitch.hook.prnt('You Join', youjoin_cb)
 	twitch.hook.command('twitch', twitchcmd_cb)

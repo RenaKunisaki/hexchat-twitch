@@ -68,12 +68,6 @@ defaults = {
 	
 	# Twitch-related settings
 	"twitch": {
-		# What to do when you send a message beginning with a period:
-		# "mydotmsg": "eat", # eat it silently like Twitch does
-		"mydotmsg": "warn", # eat it and emit a warning
-		# "mydotmsg": "space", # add a space in front
-		# "mydotmsg": "normal", # just send it anyway
-		
 		# when chat is cleared by a moderator, should we actually clear it?
 		"honorclear": False,
 	},
