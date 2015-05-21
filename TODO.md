@@ -31,3 +31,4 @@
   * If we don't have an emoji for some emote, colour the text differently so it's still clear it's meant to be an emote
     * Refresh user info periodically to check their emote sets
   * Use the same regexes as Twitch (e.g. `Kappatest` shouldn't match `Kappa`)
+  * Don't require %R after every coloured emote

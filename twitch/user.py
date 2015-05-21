@@ -6,24 +6,10 @@ import requests
 import threading
 import traceback
 import twitch.api, twitch.emotes, twitch.normalize, twitch.logger
+import twitch.settings
 from twitch.exceptions import NetworkFailure
 from twitch import irc
 log = twitch.logger.get()
-
-
-# Custom nick prefixes.
-# A user can have more than one of these; they work like the name badges
-# in Twitch chat.
-nickprefix = {
-	"global_mod":  irc.color('green',  "⛏"), # pickaxe, IIRC what Twitch uses
-	"admin":       irc.color('yellow', "📛"), # badge, similar to Twitch icon
-	"broadcaster": irc.color('red',    "📺"), # TV (no good camera symbols)
-	"mod":         irc.color('green',  "🔪"), # knife (Twitch uses sword/lightng)
-	"staff":       irc.color('pink',   "🔧"), # wrench (what Twitch uses)
-	"turbo":       irc.color('purple', "🗲"), # lightning (similar to Twitch)
-	"subscriber":  irc.color('yellow', "♥"), # heart (each channel has own icon)
-	"bot":         irc.color('lime',   "🖭"), # tape (looks like a robot face)
-}
 
 # map channel user modes to user attributes
 user_mode_attrs = {
@@ -43,6 +29,11 @@ twitchattrs = {
 cachedir = os.path.join(
 	hexchat.get_info("configdir"), "addons", "twitch", "cache", "users")
 
+# map message types to highlight versions
+msg_hilight_types = {
+	'Channel Message': 'Channel Msg Hilight',
+	'Channel Action':  'Channel Action Hilight',
+}
 
 
 # represents a user in Twitch IRC
@@ -147,36 +138,52 @@ class user(object):
 			self.color     = col
 			self.irc_color = irc.mapColor(col)
 			self.save()
+			
+			
+	# Get a dict of the user's types, with settings for that type as value
+	def getTypes(self, chan):
+		types     = {}
+		attrs     = self.getChanAttrs(chan)
+		usertypes = twitch.settings.get('usertypes')
+		
+		# iterate attrs where value == True
+		for attr in filter(lambda v: attrs[v], attrs):
+			types[attr] = usertypes.get(attr, {})
+		
+		return types
+		
+	
+	# Get a list of name badges this user should have
+	def getNameBadges(self, chan):
+		badges = []
+		for name, utype in self.getTypes(chan).items():
+			if 'badge' in utype:
+				badges.append(utype['badge'])
+		return badges
+		
+		
+	# Get the actual message type we should use for a message from this user
+	def getMsgType(self, chan, msgtype):
+		if msgtype in msg_hilight_types: # if this msgtype can be hilighted
+			for name, utype in self.getTypes(chan).items():
+				if utype.get('hilight', False):
+					return msg_hilight_types[msgtype]
+		return msgtype
 		
 		
 	# Get formatted nick for displaying in given channel.
 	# Includes badges and colours.
 	def getPrettyNick(self, chan):
-		chan = twitch.channel.get(chan).name
-		
-		# create entry for this channel if not existing
-		if not chan in self.chanAttrs:
-			self.chanAttrs[chan] = {}
-		
-		# build the display string
-		parts = []
-		attrs = self.attributes.copy()
-		attrs.update(self.chanAttrs[chan]) # merge
-		# iterate attrs where value == True
-		for attr in filter(lambda v: attrs[v], attrs):
-			parts.append(nickprefix[attr])
-		return "".join(parts + [irc.color(self.irc_color), self.displayName])
+		badges = self.getNameBadges(chan)
+		return "".join(badges + [irc.color(self.irc_color), self.displayName])
 		
 		
 	# Print user's chat message in channel.
 	def printMessage(self, chan, text, msgtype):
-		chan = twitch.channel.get(chan)
-		text = twitch.emotes.insert(text)
-		if self.chanAttrs[chan.name]['broadcaster']:
-			if msgtype == 'Channel Message':
-				msgtype = 'Channel Msg Hilight'
-			elif msgtype == 'Channel Action':
-				msgtype = 'Channel Action Hilight'
+		chan      = twitch.channel.get(chan)
+		text      = twitch.emotes.insert(text)
+		usertypes = twitch.settings.get('usertypes')
+		msgtype   = self.getMsgType(chan, msgtype)
 		chan.getContext().emit_print(msgtype, self.getPrettyNick(chan), text)
 		
 		
@@ -208,6 +215,19 @@ class user(object):
 		if self.chanAttrs[chan.name].get(attr) != val:
 			self.chanAttrs[chan.name][attr] = val
 			self.save() # avoid excessive saving
+			
+			
+	# Get channel attributes for this user.
+	def getChanAttrs(self, chan):
+		chan = twitch.channel.get(chan).name
+		
+		# create entry for this channel if not existing
+		if chan not in self.chanAttrs:
+			self.chanAttrs[chan] = {}
+		
+		attrs = self.attributes.copy()
+		attrs.update(self.chanAttrs[chan]) # merge
+		return attrs
 		
 		
 	# Set an IRC channel mode for this user.

@@ -104,3 +104,27 @@ def save(path=None):
 		json.dump(settings, f, skipkeys=True, ensure_ascii=False, indent=4,
 			sort_keys=True)
 	log.info('Saved settings to file "%s"' % path)
+	
+	
+# retrieve a setting
+def get(key):
+	global settings
+	key = key.split('.')
+	obj = settings
+	for k in key:
+		obj = obj[k]
+	return obj
+	
+	
+# change a setting
+def set(key, val):
+	global settings
+	key  = key.split('.')
+	obj  = settings
+	last = key.pop()
+	
+	for k in key:
+		obj = obj[k]
+	
+	obj[last] = val
+	save()
