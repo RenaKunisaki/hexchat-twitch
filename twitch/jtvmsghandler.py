@@ -1,5 +1,5 @@
 import hexchat
-import twitch.channel, twitch.user, twitch.logger
+import twitch.channel, twitch.user, twitch.logger, twitch.settings
 from twitch import irc
 log = twitch.logger.get()
 
@@ -34,14 +34,14 @@ def HISTORYEND(channel, param):
 	
 def CLEARCHAT(channel, param):
 	# someone got the boot, or possibly the channel was cleared?
-	chan   = twitch.channel.get(channel)
-	ctxt   = chan.getContext()
-	victim = param[0]
-	if victim:
+	chan = twitch.channel.get(channel)
+	ctxt = chan.getContext()
+	if len(param) > 0:
+		victim = param[0]
 		return _serverText(ctxt, "%s has been timed out." % victim)
 	else:
-		# we COULD do hexchat.command("clear") here, but why?
-		# XXX maybe make that an option
+		if twitch.settings.get('twitch.honorclear'):
+			hexchat.command('CLEAR')
 		return _serverText(ctxt, "Chat was cleared by a moderator")
 	
 def HOSTTARGET(channel, param):
