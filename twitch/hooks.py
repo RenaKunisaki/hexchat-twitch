@@ -77,7 +77,10 @@ def message_cb(word, word_eol, msgtype):
 		if len(word) < 1:
 			return hexchat.EAT_NONE
 		nick = word[0]
-		text = word_eol[1]
+		try:
+			text = word_eol[1]
+		except IndexError:
+			text = ''
 		user = twitch.user.get(nick)
 		chan = twitch.channel.get(hexchat.get_context())
 		user.joinChannel(chan)
