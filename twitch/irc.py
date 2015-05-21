@@ -1,3 +1,4 @@
+import hexchat
 import math
 import re
 import twitch.logger
@@ -151,3 +152,13 @@ def format(text):
 	text = re_attrs.sub(_repl, text) # do normal attributes
 	text = re_color.sub(_repl, text) # do dual colours: %C(red,blue)
 	return text
+	
+	
+# output some text to a hexchat context.
+def emit_print(ctxt, msgtype, *args):
+	if ctxt is None:
+		ctxt = hexchat
+	elif "<hexchat.Context object" not in str(name): #HACK XXX - is channel obj?
+		ctxt = ctxt.getContext()
+	
+	ctxt.emit_print(msgtype, *args)

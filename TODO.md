@@ -16,6 +16,7 @@
 	* Optional notification when someone is ignored
   * Open a PM window when you receive a message on Twitch
     * also look into group/private chat system
+  * Notify message when someone you follow goes online
 * More local customization:
   * Be able to edit user attributes locally, such as nick colour, displayed nick, custom badges, etc (per user)
 * Better handling of some events:

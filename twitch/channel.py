@@ -172,6 +172,11 @@ class channel(object):
 		if user.nick in self.users:
 			del self.users[user.nick]
 			
+	# Emit a message in this channel's context.
+	# Would be named print, but that's a reserved word in Python.
+	def emit_print(self, msgtype, *args):
+		irc.emit_print(self, msgtype, *args)
+	
 # channels we know about (name => obj)
 channels = {}
 

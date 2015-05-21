@@ -198,7 +198,7 @@ class user(object):
 		text      = self.formatMessageText(chan, text)
 		usertypes = twitch.settings.get('usertypes')
 		msgtype   = self.getMsgType(chan, msgtype)
-		chan.getContext().emit_print(msgtype, self.getPrettyNick(chan), text)
+		chan.emit_print(msgtype, self.getPrettyNick(chan), text)
 		
 		
 	# Add user to a channel if they aren't there already.

@@ -11,15 +11,6 @@ log = twitch.logger.get()
 ban_msg_regex = re.compile(r"for (\d+) more seconds")
 
 
-# XXX why do we have to colour the server texts? Why do they not
-# already appear in the "server text" colour?
-# XXX make this something like log.server or twitch.serverText?
-# or twitch.prnt(type, text)?
-def _serverText(ctxt, text):
-	ctxt.emit_print('Server Text', irc.color('orange', text))
-	return hexchat.EAT_ALL
-
-
 # Identify ourselves as Twitch IRC client to get user info
 def endofmotd_cb(word, word_eol, userdata):
 	hexchat.command('QUOTE TWITCHCLIENT 3')
@@ -41,7 +32,8 @@ def privmsg_cb(word, word_eol, msgtype):
 		text = word_eol[3]
 		if nick == 'jtv':
 			if chan[0] != '#':
-				return _serverText(hexchat, text[1:])
+				irc.emit_print(None, 'Server Text', text[1:])
+				return hexchat.EAT_ALL
 			elif "You are banned" in text:
 				if not chan.areWeBanned:
 					chan.areWeBanned = True
@@ -50,7 +42,7 @@ def privmsg_cb(word, word_eol, msgtype):
 
 					def clear_ban(userdata):
 						chan.areWeBanned = False
-						_serverText(chan.getContext(),
+						chan.emit_print('Server Text',
 							"You are (hopefully) no longer banned")
 					hexchat.hook_timer(time * 1000, clear_ban)
 			else:
@@ -61,9 +53,11 @@ def privmsg_cb(word, word_eol, msgtype):
 				else:
 					#log.warning("Unhandled JTV message: %s" % str(word))
 					ctxt = twitch.channel.get(chan).getContext()
-					return _serverText(ctxt, text[1:])
+					twitch.channel.get(chan).emit_print('Server Text', text[1:])
+					return hexchat.EAT_ALL
 		elif nick == 'twitchnotify':
-			return _serverText(hexchat, text[1:])
+			twitch.channel.get(chan).emit_print('Server Text', text[1:])
+			return hexchat.EAT_ALL
 		else:
 			return hexchat.EAT_NONE
 	except:
