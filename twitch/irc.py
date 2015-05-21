@@ -204,14 +204,18 @@ def emit_print(ctxt, msgtype, *args):
 	
 	fmt = twitch.settings.get('textfmts.%s' % msgtype.replace(' ', '_'))
 	if fmt is not None:
+		myArgs = []
+		for arg in args:
+			myArgs.append(arg)
 		try:
 			# look up which parameter is text.
 			idx = msgtype_textpos[msgtype].index('text')
 			
 			# format the text.
-			args[idx] = format(fmt.format(args[idx]))
+			myArgs[idx] = format(fmt.format(myArgs[idx]))
 		except (KeyError, ValueError):
 			pass
+		args = tuple(myArgs)
 		
 	# end if
 		
