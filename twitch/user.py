@@ -28,6 +28,10 @@ twitchattrs = {
 # where to store our cache files
 cachedir = os.path.join(
 	hexchat.get_info("configdir"), "addons", "twitch", "cache", "users")
+try:
+	os.makedirs(cachedir)
+except FileExistsError:
+	pass
 
 # map message types to highlight versions
 msg_hilight_types = {
