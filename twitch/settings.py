@@ -87,9 +87,12 @@ def load(path=None):
 	if path is None: path = default_path
 	log.debug('Loading settings from file "%s"' % path)
 	
-	with open(path) as f:
-		settings = json.load(f)
-	log.info('Loaded settings from file "%s"' % path)
+	try:
+		with open(path) as f:
+			settings = json.load(f)
+		log.info('Loaded settings from file "%s"' % path)
+	except FileNotFoundError:
+		log.warning('File "%s" not found' % path)
 	
 	return settings
 
