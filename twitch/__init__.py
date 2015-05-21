@@ -8,5 +8,6 @@ def run():
 	twitch.topic.run()
 	
 def shutdown():
+	twitch.settings.save()
 	for nick, user in twitch.user.users.items():
 		user.save()

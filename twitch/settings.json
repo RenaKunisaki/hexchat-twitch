@@ -1,0 +1,43 @@
+{
+    "textfmts": {
+        "server": "%C(orange){}"
+    },
+    "topic": {
+        "refreshinterval": 60
+    },
+    "twitch": {
+        "honorclear": false,
+        "mydotmsg": "warn"
+    },
+    "usertypes": {
+        "admin": {
+            "badge": "%C(yellow)📛%B",
+            "format": "%B{}"
+        },
+        "bot": {
+            "badge": "%C(lime)🖭"
+        },
+        "broadcaster": {
+            "badge": "%C(red)📺%B",
+            "hilight": true
+        },
+        "global_mod": {
+            "badge": "%C(green)⛏%B",
+            "format": "%B{}"
+        },
+        "mod": {
+            "badge": "%C(green)🔪",
+            "format": "%B{}"
+        },
+        "staff": {
+            "badge": "%C(pink)🔧%B",
+            "format": "%B{}"
+        },
+        "subscriber": {
+            "badge": "%C(yellow)♥"
+        },
+        "turbo": {
+            "badge": "%C(purple)🗲"
+        }
+    }
+}
