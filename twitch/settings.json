@@ -1,6 +1,6 @@
 {
     "textfmts": {
-        "server": "%C(orange){}"
+        "Server_Text": "%C(orange){}"
     },
     "topic": {
         "refreshinterval": 60

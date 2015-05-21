@@ -63,7 +63,7 @@ defaults = {
 		# This is used for messages from 'jtv' and 'twitchnotify' such as
 		# "This room is in slow mode" or "Joe just subscribed".
 		# {} represents the message.
-		"server": "%C(orange){}"
+		"Server_Text": "%C(orange){}"
 	},
 	
 	# Twitch-related settings
@@ -120,9 +120,12 @@ def get(key):
 	global settings
 	key = key.split('.')
 	obj = settings
-	for k in key:
-		obj = obj[k]
-	return obj
+	try:
+		for k in key:
+			obj = obj[k]
+		return obj
+	except KeyError:
+		return None
 	
 	
 # change a setting
@@ -133,6 +136,8 @@ def set(key, val):
 	last = key.pop()
 	
 	for k in key:
+		if k not in obj:
+			obj[k] = {}
 		obj = obj[k]
 	
 	obj[last] = val

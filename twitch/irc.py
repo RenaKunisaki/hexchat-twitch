@@ -1,7 +1,7 @@
 import hexchat
 import math
 import re
-import twitch.logger
+import twitch.logger, twitch.settings
 log = twitch.logger.get()
 
 # default IRC colours
@@ -46,6 +46,47 @@ colors_rgb = [
 	(127, 127, 127), # grey
 	(210, 210, 210), # light grey
 ]
+
+
+# hexchat message type => parameter names
+# note that in the Text Events window, parameters start at $1, but in Python,
+# they start at 0. This isn't a big deal, because we just use a list and
+# the .index() method anyway.
+msgtype_textpos = {
+	"Channel Action":            ['nick', 'text', 'mode', 'identified'],
+	"Channel Action Hilight":    ['nick', 'text', 'mode', 'identified'],
+	"Channel Message":           ['nick', 'text', 'mode', 'identified'],
+	"Channel Msg Hilight":       ['nick', 'text', 'mode', 'identified'],
+	"Channel Notice":            ['nick', 'chan', 'text'],
+	"Generic Message":           ['prefix', 'text'],
+	"Kick":                      ['from', 'victim', 'chan', 'text'],
+	"Killed":                    ['from', 'text'],
+	"Message Send":              ['nick', 'text'],
+	"Motd":                      ['text'],
+	"Notice":                    ['from', 'text'],
+	"Notice Send":               ['nick', 'text'],
+	"Part":                      ['nick', 'host', 'chan'],
+	"Part with Reason":          ['nick', 'host', 'chan', 'text'],
+	"Private Action":            ['nick', 'text', 'identified'],
+	"Private Action to Dialog":  ['nick', 'text', 'identified'],
+	"Private Message":           ['nick', 'text', 'identified'],
+	"Private Message to Dialog": ['nick', 'text', 'identified'],
+	"Quit":                      ['nick', 'text', 'host'],
+	"Receive Wallops":           ['from', 'text'],
+	"Server Error":              ['text'],
+	"Server Notice":             ['text', 'server'],
+	"Server Text":               ['text', 'server', 'verb'],
+	"Topic":                     ['chan', 'text'],
+	"Topic Change":              ['nick', 'text', 'chan'],
+	"You Join":                  ['nick', 'chan', 'host'],
+	"You Kicked":                ['victim', 'chan', 'from', 'text'],
+	"You Part":                  ['nick', 'host', 'chan'],
+	"You Part with Reason":      ['nick', 'host', 'chan', 'text'],
+	"Your Action":               ['nick', 'text', 'mode'],
+	"Your Message":              ['nick', 'text', 'mode', 'identified'],
+	"Your Nick Changing":        ['from', 'to'],
+}
+
 
 # from http://www.compuphase.com/cmetric.htm
 # compute distance between two RGB colours
@@ -161,4 +202,17 @@ def emit_print(ctxt, msgtype, *args):
 	elif "<hexchat.Context object" not in str(name): #HACK XXX - is channel obj?
 		ctxt = ctxt.getContext()
 	
+	fmt = twitch.settings.get('textfmts.%s' % msgtype.replace(' ', '_'))
+	if fmt is not None:
+		try:
+			# look up which parameter is text.
+			idx = msgtype_textpos[msgtype].index('text')
+			
+			# format the text.
+			args[idx] = format(fmt.format(args[idx]))
+		except (KeyError, ValueError):
+			pass
+		
+	# end if
+		
 	ctxt.emit_print(msgtype, *args)
