@@ -74,26 +74,26 @@ def loglevel(param, param_eol):
 	# "loglevel" or "loglevel all": list all modules' levels
 	if modname is None or (modname == 'all' and level is None):
 		for mod, logger in loggers.items():
-			print(" * %s: %s" % (mod, getLogLevel(logger)))
+			print("* %s: %s" % (mod, getLogLevel(logger)))
 			
 	elif level is None: # show single module
 		if modname in loggers:
-			print(" * %s: %s" % (modname, getLogLevel(loggers[modname])))
+			print("* %s: %s" % (modname, getLogLevel(loggers[modname])))
 		else:
-			print(" * %s: unknown module" % modname)
+			print("* %s: unknown module" % modname)
 			
 	else: # set module log level
 		if modname == 'all':
 			for mod, logger in loggers.items():
 				logger.setLevel(level)
-			print(" * All modules -> %s" % level)
+			print("* All modules -> %s" % level)
 		elif modname in loggers:
 			logger = loggers[modname]
 			oldLevel = getLogLevel(logger)
 			logger.setLevel(level)
-			print(" * %s: %s -> %s" % (modname, oldLevel, level))
+			print("* %s: %s -> %s" % (modname, oldLevel, level))
 		else:
-			print(" * %s: unknown module" % modname)
+			print("* %s: unknown module" % modname)
 
 	# XXX be able to change the log levels for output to file/console
 	
@@ -206,31 +206,31 @@ def emote(param, param_eol):
 			raise BadParameterError("Usage: emote set text replacement")
 		twitch.emotes.set(param[1], param[2])
 		twitch.emotes.save()
-		print(" * %s => %s" % (param[1], irc.format(param[2])))
+		print("* %s => %s" % (param[1], irc.format(param[2])))
 	
 	elif action == 'del':
 		if len(param) < 2:
 			raise BadParameterError("Usage: emote del name")
 		twitch.emotes.delete(param[1])
 		twitch.emotes.save()
-		print(" * %s deleted" % param[1])
+		print("* %s deleted" % param[1])
 	
 	elif action == 'reload':
 		twitch.emotes.load()
-		print(" * Loaded %d emotes" % len(twitch.emotes.emotes))
+		print("* Loaded %d emotes" % len(twitch.emotes.emotes))
 	
 	elif action == 'list':
 		for key in twitch.emotes.parsed_emotes:
-			print(" * %s => %s" % (key, twitch.emotes.parsed_emotes[key]))
+			print("* %s => %s" % (key, twitch.emotes.parsed_emotes[key]))
 	
 	elif action == 'show':
 		if len(param) < 2:
 			raise BadParameterError("Usage: emote show name")
 		name = param[1]
 		if name in twitch.emotes.parsed_emotes:
-			print(" * %s => %s" % (name, twitch.emotes.parsed_emotes[name]))
+			print("* %s => %s" % (name, twitch.emotes.parsed_emotes[name]))
 		else:
-			print(" * No emote '%s' defined" % name)
+			print("* No emote '%s' defined" % name)
 	
 	else:
 		raise BadParameterError("Unknown action '%s'" % action)

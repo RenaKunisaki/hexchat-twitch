@@ -5,6 +5,7 @@
   * hook Twitch commands: /ban, /commercial, etc
   * hook `/topic` to trigger a manual update and display it, especially since it does nothing currently
   * make `/twitch set` use a better syntax, like `/twitch set user.joe.bot true`
+  * be able to change settings: `/twitch set usertypes.mod.format %B{}`
   * be able to display the unformatted text for an emote (`/twitch emote raw Kappa`) to be able to edit it easily
     * non-case-sensitive matching for emote commands
   * be able to change the log levels for file/console output
@@ -22,7 +23,7 @@
     * Check for slow mode, subs-only mode, r9k mode etc when joining
 	* Include these attributes in the `channel` object so they can be shown in topic
   * logger: Be able to emit log events to a context of their own
-  * common "emit server text" method
+  * common "emit server text" method (honor textfmts.server setting)
 * Make tab completion work somehow
   * Maybe emit `JOIN` events for users we haven't seen before
 * Better emote handling:
