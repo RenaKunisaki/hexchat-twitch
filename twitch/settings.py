@@ -36,7 +36,7 @@ defaults = {
 		},
 		"mod": {
 			"badge": "%C(green)🔪", # knife (Twitch uses sword/lightning bolt)
-			"format": "%B{}"
+			#"format": "%B{}"
 		},
 		"staff": {
 			"badge": "%C(pink)🔧%B", # wrench (what Twitch uses)
