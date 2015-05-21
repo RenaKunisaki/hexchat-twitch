@@ -1,6 +1,6 @@
 import hexchat
 import threading
-import twitch.hook, twitch.channel, twitch.logger
+import twitch.hook, twitch.channel, twitch.logger, twitch.settings
 log = twitch.logger.get()
 
 
@@ -74,6 +74,8 @@ def update_channel(chan):
 		
 
 def run():
+	# XXX if setting is changed, reset the timer
 	twitch.hook.prnt('Topic Change', topic_print_cb)
 	twitch.hook.timer(1000, topic_update_cb)
-	twitch.hook.timer(60000, update_channels_cb)
+	twitch.hook.timer(twitch.settings.get('topic.refreshinterval') * 1000,
+		update_channels_cb)
