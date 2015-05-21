@@ -23,8 +23,7 @@
   * Option to filter out repeated "this room is in slow mode" messages when the slow mode setting hasn't changed
     * Check for slow mode, subs-only mode, r9k mode etc when joining
 	* Include these attributes in the `channel` object so they can be shown in topic
- * Prevent `DEBUG` log events emitting to main hexchat context
-   * Be able to emit log events to a context of their own
+  * logger: Be able to emit log events to a context of their own
 * Make tab completion work somehow
   * Maybe emit `JOIN` events for users we haven't seen before
 * Better emote handling:

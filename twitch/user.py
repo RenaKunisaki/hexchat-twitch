@@ -73,7 +73,7 @@ class user(object):
 		path = os.path.join(cachedir, self.nick)
 		try:
 			with open(path) as f:
-				log.debug("%s.lookup cache hit" % str(self))
+				# log.debug("%s.lookup cache hit" % str(self))
 				data = json.load(f)
 				for k, v in data.items(): #merge this into ourself
 					setattr(self, k, v)		
@@ -166,10 +166,12 @@ class user(object):
 	def getMsgType(self, chan, msgtype):
 		if msgtype in msg_hilight_types: # if this msgtype can be hilighted
 			for name, utype in self.getTypes(chan).items():
+				log.debug("User '%s' channel '%s' type '%s'" %
+					(self.nick, chan.name, name))
 				if utype.get('hilight', False):
 					tp = msg_hilight_types[msgtype]
 					log.debug("User '%s' channel '%s' msgtype '%s' -> '%s'" %
-						(self.name, chan.name, msgtype, tp))
+						(self.nick, chan.name, msgtype, tp))
 					return tp
 		return msgtype
 		
