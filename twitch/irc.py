@@ -199,7 +199,7 @@ def format(text):
 def emit_print(ctxt, msgtype, *args):
 	if ctxt is None:
 		ctxt = hexchat
-	elif "<hexchat.Context object" not in str(name): #HACK XXX - is channel obj?
+	elif "<hexchat.Context object" not in str(ctxt): #HACK XXX - is channel obj?
 		ctxt = ctxt.getContext()
 	
 	fmt = twitch.settings.get('textfmts.%s' % msgtype.replace(' ', '_'))
