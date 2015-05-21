@@ -14,6 +14,7 @@ f.close()
 
 logger = logging.getLogger('twitch')
 logger.setLevel(logging.DEBUG)
+logger.propagate = False # do not fall back to default handler
 
 formatter = logging.Formatter(
 	'%(asctime)s %(name)s:%(lineno)d %(levelname)s: %(message)s', datefmt)
@@ -24,7 +25,6 @@ fh.setFormatter(formatter)
 logger.addHandler(fh)
 
 # XXX custom handler to log to a hexchat context,
-# and prevent DEBUG level logging to current context
 
 # existing loggers indexed by module name
 loggers = {}
