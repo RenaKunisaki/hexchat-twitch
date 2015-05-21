@@ -97,6 +97,17 @@ def loglevel(param, param_eol):
 
 	# XXX be able to change the log levels for output to file/console
 	
+	
+################################################################################
+@command({
+	"usage"    : "level text...",
+	"desc"     : "print text at specified debug log level",
+	"minparams": 2,
+})
+def testlog(param, param_eol):
+	level = logging.getLevelName(param[0].upper())
+	log.log(level, param_eol[1])
+	
 		
 ################################################################################
 @command({
