@@ -144,7 +144,6 @@ def isCommand(name, obj):
 	return (callable(obj) and (not name.startswith('_'))
 		and hasattr(obj, 'command'))
 		
-		
 # handler for /twitch command
 def twitchcmd_cb(word, word_eol, userdata):
 	try:
@@ -175,16 +174,36 @@ def twitchcmd_cb(word, word_eol, userdata):
 		return hexchat.EAT_ALL
 		
 		
+# suppress "gives/removes channel operator status" messages
+def chanop_cb(word, word_eol, msgtype):
+	if twitch.settings.get('mute.chanop'):
+		return hexchat.EAT_ALL
+	else:
+		return hexchat.EAT_NONE
+		
+		
+# suppress join/part messages
+def joinpart_cb(word, word_eol, msgtype):
+	if twitch.settings.get('mute.joinpart'):
+		return hexchat.EAT_ALL
+	else:
+		return hexchat.EAT_NONE
+		
+		
 # Install the hooks
 def install():
-	twitch.hook.server('376', endofmotd_cb)
-	twitch.hook.server('421', servererr_cb)
-	twitch.hook.server('PRIVMSG', privmsg_cb)
-	twitch.hook.prnt('Channel Action',         message_cb)
-	twitch.hook.prnt('Channel Action Hilight', message_cb)
-	twitch.hook.prnt('Channel Message',        message_cb)
-	twitch.hook.prnt('Channel Msg Hilight',    message_cb)
-	twitch.hook.prnt('Your Message',           message_cb)
-	twitch.hook.server('MODE', mode_cb)
-	twitch.hook.prnt('You Join', youjoin_cb)
-	twitch.hook.command('twitch', twitchcmd_cb)
+	twitch.hook.server ('376',                    endofmotd_cb)
+	twitch.hook.server ('421',                    servererr_cb)
+	twitch.hook.server ('PRIVMSG',                privmsg_cb)
+	twitch.hook.prnt   ('Channel Action',         message_cb)
+	twitch.hook.prnt   ('Channel Action Hilight', message_cb)
+	twitch.hook.prnt   ('Channel Message',        message_cb)
+	twitch.hook.prnt   ('Channel Msg Hilight',    message_cb)
+	twitch.hook.prnt   ('Your Message',           message_cb)
+	twitch.hook.server ('MODE',                   mode_cb)
+	twitch.hook.prnt   ('You Join',               youjoin_cb)
+	twitch.hook.command('twitch',                 twitchcmd_cb)
+	twitch.hook.prnt   ('Channel Operator',       chanop_cb)
+	twitch.hook.prnt   ('Channel DeOp',           chanop_cb)
+	twitch.hook.prnt   ('Join',                   joinpart_cb)
+	twitch.hook.prnt   ('Part',                   joinpart_cb)

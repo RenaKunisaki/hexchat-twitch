@@ -77,6 +77,16 @@ defaults = {
 		# How often to refresh channel info, in seconds
 		"refreshinterval": 60,
 	},
+	
+	# Mute certain types of messages
+	"mute": {
+		# jtv gives/removes channel operator status (which it seems to do a
+		# lot for no apparent reason)
+		"chanop": True,
+		
+		# user joins/leaves the channel (Twitch spams these a lot)
+		"joinpart": True,
+	},
 }
 
 # the current settings
