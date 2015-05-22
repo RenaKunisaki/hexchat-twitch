@@ -26,7 +26,6 @@
         },
         "mod": {
             "badge": "%C(green)🔪",
-            "format": "%B{}"
         },
         "staff": {
             "badge": "%C(pink)🔧%B",
