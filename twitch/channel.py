@@ -32,6 +32,7 @@ class channel(object):
 		self.updating    = False # are we currently updating?
 		self.areWeBanned = False # did we receive a "you are banned" message?
 		# (only for temp bans, to notify when time expires)
+		self.histEndRecvd= False # did we receive HISTORYEND msg yet?
 		self.lookup()
 	
 	def __str__(self):

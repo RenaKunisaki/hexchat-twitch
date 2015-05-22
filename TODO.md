@@ -8,6 +8,10 @@
   * be able to change settings: `/twitch set usertypes.mod.format %B{}`
   * be able to display the unformatted text for an emote (`/twitch emote raw Kappa`) to be able to edit it easily
     * non-case-sensitive matching for emote commands
+	* can the emote commands be e.g. `/twitch set emote.Kappa ;)` instead of
+	  a separate command? (would need to also add del/show/list commands)
+	  * Not if we want to be able to list all emotes you can use (whether we
+	    have emojis for them or not).
   * be able to change the log levels for file/console output
   * better command handling in general
 * More Twitch integration:

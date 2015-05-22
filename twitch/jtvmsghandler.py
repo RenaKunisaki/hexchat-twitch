@@ -25,8 +25,10 @@ def SPECIALUSER(channel, param):
 def HISTORYEND(channel, param):
 	# when we join a channel, some older messages are replayed.
 	# this tells when those messages are finished.
-	twitch.channel.get(channel).emit_print('Server Text',
-		"End of history replay")
+	chan = twitch.channel.get(channel)
+	if not chan.histEndRecvd:
+		chan.emit_print('Server Text', "End of history replay")
+		chan.histEndRecvd = True
 	return hexchat.EAT_ALL
 	
 def CLEARCHAT(channel, param):
