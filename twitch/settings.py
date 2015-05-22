@@ -99,6 +99,9 @@ def load(path=None):
 		log.info('Loaded settings from file "%s"' % path)
 	except FileNotFoundError:
 		log.warning('File "%s" not found' % path)
+	except (ValueError, NameError) as ex:
+		# JSON module throws NameError sometimes. bug?
+		log.error('Error loading "%s": %s' % (path, str(ex)))
 	
 	return settings
 
