@@ -204,6 +204,7 @@ def emit_print(ctxt, msgtype, *args):
 	
 	fmt = twitch.settings.get('textfmts.%s' % msgtype.replace(' ', '_'))
 	if fmt is not None:
+		#log.debug("%s: args before: %s" % (msgtype, " | ".join(args)))
 		myArgs = []
 		for arg in args:
 			myArgs.append(arg)
@@ -213,10 +214,13 @@ def emit_print(ctxt, msgtype, *args):
 			
 			# format the text.
 			myArgs[idx] = format(fmt.format(myArgs[idx]))
+			args = tuple(myArgs)
+			#log.debug("%s: args after: %s" % (msgtype, " | ".join(args)))
 		except (KeyError, ValueError):
 			pass
-		args = tuple(myArgs)
 		
+	#else:
+	#	log.debug("%s: args not modified: %s" % (msgtype, " | ".join(args)))
 	# end if
 		
 	ctxt.emit_print(msgtype, *args)

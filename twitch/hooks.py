@@ -74,11 +74,13 @@ def message_cb(word, word_eol, msgtype):
 		return
 	message_cb_recurse = True
 	try:
+		#log.debug("message_cb word=%s" % str(word))
+		#log.debug("message_cb word_eol=%s" % str(word_eol))
 		if len(word) < 1:
 			return hexchat.EAT_NONE
 		nick = word[0]
 		try:
-			text = word_eol[1]
+			text = word[1]
 		except IndexError:
 			text = ''
 		user = twitch.user.get(nick)
