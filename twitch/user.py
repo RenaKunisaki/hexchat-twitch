@@ -5,6 +5,7 @@ import json
 import requests
 import threading
 import traceback
+from random import randint
 import twitch.api, twitch.emotes, twitch.normalize, twitch.logger
 import twitch.settings
 from twitch.exceptions import NetworkFailure
@@ -49,7 +50,7 @@ class user(object):
 		self.nick        = nick
 		self.displayName = nick
 		self.color       = None
-		self.irc_color   = irc.colors['grey']
+		self.irc_color   = randint(0, 15)
 		self.emoteSet    = None
 		self.createdAt   = None
 		self.updatedAt   = None

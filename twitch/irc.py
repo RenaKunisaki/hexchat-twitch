@@ -91,6 +91,7 @@ msgtype_textpos = {
 # from http://www.compuphase.com/cmetric.htm
 # compute distance between two RGB colours
 # expects (r, g, b) in range 0-255
+# XXX this algorithm isn't great
 def colorDistance(A, B):
 	rmean = int((A[0] + B[0]) / 2)
 	r = A[0] - B[0]
