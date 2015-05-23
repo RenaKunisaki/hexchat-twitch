@@ -7,8 +7,11 @@ def get(params):
 	method = 'GET'
 	if 'method' in params:
 		method = params['method']
-	r = requests.request(method, **params)
-	return r.json()
+	try:
+		r = requests.request(method, **params)
+		return r.json()
+	except ValueError: # bad JSON reply
+		return IOError("Bad response from server")
 
 def getUser(nick):
 	nick = twitch.normalize.nick(nick)

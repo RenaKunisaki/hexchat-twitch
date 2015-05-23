@@ -79,7 +79,7 @@ class channel(object):
 					log.debug("%s: done" % here)
 					self.updating = False
 					return
-				except NetworkFailure:
+				except (NetworkFailure, IOError):
 					log.debug("%s: network error; retrying" % here)
 					time.sleep(60) # wait and try again.
 				except:
