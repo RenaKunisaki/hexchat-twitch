@@ -199,6 +199,7 @@ def install():
 	twitch.hook.prnt   ('Channel Action Hilight', message_cb)
 	twitch.hook.prnt   ('Channel Message',        message_cb)
 	twitch.hook.prnt   ('Channel Msg Hilight',    message_cb)
+	twitch.hook.prnt   ('Your Action',            message_cb)
 	twitch.hook.prnt   ('Your Message',           message_cb)
 	twitch.hook.server ('MODE',                   mode_cb)
 	twitch.hook.prnt   ('You Join',               youjoin_cb)
