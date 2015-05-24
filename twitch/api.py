@@ -11,7 +11,7 @@ def get(params):
 		r = requests.request(method, **params)
 		return r.json()
 	except ValueError: # bad JSON reply
-		return IOError("Bad response from server")
+		raise IOError("Bad response from server")
 
 def getUser(nick):
 	nick = twitch.normalize.nick(nick)
