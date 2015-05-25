@@ -28,8 +28,9 @@
     * Check for slow mode, subs-only mode, r9k mode etc when joining
 	* Include these attributes in the `channel` object so they can be shown in topic
   * logger: Be able to emit log events to a context of their own
-  * Don't output HOSTTARGET raw message
-    * Do output the channel URL and #channel to click on in hexchat
+  * Synthesize NICK message to rename users to their proper display name once we know what it is, so it shows up in the user list.
+    * Will need to queue these like we do with TOPIC because posting them from another thread will probably crash hexchat again.
+	  * Probably should change that mechanism to just be a list of commands to run in the main thread rather than topic changes specifically.
 * Better emote handling:
   * If we don't have an emoji for some emote, colour the text differently so it's still clear it's meant to be an emote
     * Refresh user info periodically to check their emote sets
