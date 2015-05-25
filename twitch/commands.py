@@ -73,7 +73,7 @@ def loglevel(param, param_eol):
 	
 	# "loglevel" or "loglevel all": list all modules' levels
 	if modname is None or (modname == 'all' and level is None):
-		for mod, logger in loggers.items():
+		for mod, logger in sorted(loggers.items()):
 			print("* %s: %s" % (mod, getLogLevel(logger)))
 			
 	elif level is None: # show single module
@@ -84,7 +84,7 @@ def loglevel(param, param_eol):
 			
 	else: # set module log level
 		if modname == 'all':
-			for mod, logger in loggers.items():
+			for mod, logger in sorted(loggers.items()):
 				logger.setLevel(level)
 			print("* All modules -> %s" % level)
 		elif modname in loggers:
