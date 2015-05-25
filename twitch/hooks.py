@@ -78,7 +78,7 @@ def message_cb(word, word_eol, msgtype):
 		#log.debug("message_cb word_eol=%s" % str(word_eol))
 		if len(word) < 1:
 			return hexchat.EAT_NONE
-		nick = word[0]
+		nick = twitch.normalize.nick(word[0])
 		try:
 			text = word[1]
 		except IndexError:
@@ -151,6 +151,7 @@ def youpart_cb(word, word_eol, msgtype):
 		twitch.channel.get(chan).leave()
 	except:
 		log.exception("Unhandled exception in twitch.youpart_cb")
+		
 		
 def isCommand(name, obj):
 	return (callable(obj) and (not name.startswith('_'))
