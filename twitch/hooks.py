@@ -201,7 +201,7 @@ def join_cb(word, word_eol, msgtype):
 			user.joinChannel(chan)
 			return hexchat.EAT_NONE
 	except:
-		log.exception("Unhandled exception in twitch.twitchcmd_cb(%s)" % cmd)
+		log.exception("Unhandled exception in twitch.join_cb(%s)" % str(word))
 		return hexchat.EAT_NONE
 		
 
