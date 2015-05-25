@@ -33,6 +33,7 @@ class channel(object):
 		self.areWeBanned = False # did we receive a "you are banned" message?
 		# (only for temp bans, to notify when time expires)
 		self.histEndRecvd= False # did we receive HISTORYEND msg yet?
+		self.joined      = False # are we currently in this channel?
 		self.lookup()
 	
 	def __str__(self):
@@ -177,9 +178,23 @@ class channel(object):
 	# Would be named print, but that's a reserved word in Python.
 	def emit_print(self, msgtype, *args):
 		irc.emit_print(self, msgtype, *args)
+		
+		
+	# Indicate that we've joined this channel.
+	def join(self):
+		log.info("Joined channel '%s'" % self.name)
+		self.joined = True
+		
+		
+	# Indicate that we've left this channel.
+	def leave(self):
+		log.info("Left channel '%s'" % self.name)
+		self.joined = False
+		
 	
 # channels we know about (name => obj)
 channels = {}
+
 
 # look up channel by name or context; create if not existing
 # if given a channel object, just returns it. so use this to ensure

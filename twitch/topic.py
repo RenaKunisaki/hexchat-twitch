@@ -50,13 +50,15 @@ def update_channel_thread(chan):
 def update_channels_cb(userdata):
 	try:
 		for name in twitch.channel.channels:
-			log.debug("Update channel %s" % name)
-			t = threading.Thread(
-				target = update_channel_thread,
-				args   = (twitch.channel.channels[name],),
-				name   = "twitch.update_channel_thread(%s)" % name,
-				daemon = True)
-			t.start()
+			chan = twitch.channel.channels[name]
+			if chan.joined:
+				log.debug("Update channel %s" % name)
+				t = threading.Thread(
+					target = update_channel_thread,
+					args   = (twitch.channel.channels[name],),
+					name   = "twitch.update_channel_thread(%s)" % name,
+					daemon = True)
+				t.start()
 	except:
 		log.exception("Unhandled exception in twitch.update_channels_cb")
 	

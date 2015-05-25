@@ -121,6 +121,7 @@ def mode_cb(word, word_eol, msgtype):
 def youjoin_cb(word, word_eol, msgtype):
 	try:
 		chan = twitch.channel.get(word[1])
+		chan.join()
 		
 		# automatically set up some users
 		jtv = twitch.user.get('jtv')
@@ -139,6 +140,17 @@ def youjoin_cb(word, word_eol, msgtype):
 	finally:
 		return hexchat.EAT_NONE
 		
+		
+# When we leave a channel, stop updating it
+def youpart_cb(word, word_eol, msgtype):
+	try:
+		if msgtype == 'You Kicked':
+			chan = word[1]
+		else:
+			chan = word[2]
+		twitch.channel.get(chan).leave()
+	except:
+		log.exception("Unhandled exception in twitch.youpart_cb")
 		
 def isCommand(name, obj):
 	return (callable(obj) and (not name.startswith('_'))
@@ -203,6 +215,9 @@ def install():
 	twitch.hook.prnt   ('Your Message',           message_cb)
 	twitch.hook.server ('MODE',                   mode_cb)
 	twitch.hook.prnt   ('You Join',               youjoin_cb)
+	twitch.hook.prnt   ('You Part',               youpart_cb)
+	twitch.hook.prnt   ('You Part with Reason',   youpart_cb)
+	twitch.hook.prnt   ('You Kicked',             youpart_cb)
 	twitch.hook.command('twitch',                 twitchcmd_cb)
 	twitch.hook.prnt   ('Channel Operator',       chanop_cb)
 	twitch.hook.prnt   ('Channel DeOp',           chanop_cb)
