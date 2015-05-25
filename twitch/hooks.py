@@ -59,6 +59,7 @@ def privmsg_cb(word, word_eol, msgtype):
 			twitch.channel.get(chan).emit_print('Server Text', text[1:])
 			return hexchat.EAT_ALL
 		else:
+			twitch.user.get(nick).joinChannel(chan)
 			return hexchat.EAT_NONE
 	except:
 		log.exception("Unhandled exception in twitch.privmsg_cb")
@@ -187,6 +188,23 @@ def twitchcmd_cb(word, word_eol, userdata):
 		return hexchat.EAT_ALL
 		
 		
+# ignore repeated JOIN events that can happen because we simulate them
+# (since Twitch doesn't always send them reliably)
+def join_cb(word, word_eol, msgtype):
+	try:
+		nick = twitch.normalize.nick((word[0][1:].split('!')[0]))
+		user = twitch.user.get(nick)
+		chan = twitch.channel.get(word[2])
+		if chan.hasUser(user):
+			return hexchat.EAT_ALL
+		else:
+			user.joinChannel(chan)
+			return hexchat.EAT_NONE
+	except:
+		log.exception("Unhandled exception in twitch.twitchcmd_cb(%s)" % cmd)
+		return hexchat.EAT_NONE
+		
+
 # suppress "gives/removes channel operator status" messages
 def chanop_cb(word, word_eol, msgtype):
 	if twitch.settings.get('mute.chanop'):
@@ -215,6 +233,7 @@ def install():
 	twitch.hook.prnt   ('Your Action',            message_cb)
 	twitch.hook.prnt   ('Your Message',           message_cb)
 	twitch.hook.server ('MODE',                   mode_cb)
+	twitch.hook.server ('JOIN',                   join_cb)
 	twitch.hook.prnt   ('You Join',               youjoin_cb)
 	twitch.hook.prnt   ('You Part',               youpart_cb)
 	twitch.hook.prnt   ('You Part with Reason',   youpart_cb)

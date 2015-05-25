@@ -167,12 +167,19 @@ class channel(object):
 		
 	# Add user to this channel if they aren't there already.
 	def addUser(self, user):
+		user = twitch.user.get(user)
 		self.users[user.nick] = user
 		
 	# Remove user from this channel if they're here.
 	def removeUser(self, user):
+		user = twitch.user.get(user)
 		if user.nick in self.users:
 			del self.users[user.nick]
+			
+	# Check if user is in this channel.
+	def hasUser(self, user):
+		user = twitch.user.get(user)
+		return user.nick in self.users
 			
 	# Emit a message in this channel's context.
 	# Would be named print, but that's a reserved word in Python.
@@ -209,6 +216,7 @@ def get(name):
 	else:
 		name = twitch.normalize.channel(name)
 		if name not in channels:
+			log.debug("Creating channel '%s'" % name)
 			chan = channel(name)
 			channels[name] = chan
 		return channels[name]

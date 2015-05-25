@@ -77,12 +77,18 @@ class user(object):
 		data = None
 		path = os.path.join(cachedir, self.nick)
 		try:
+			# read the saved .json file for this user
 			with open(path) as f:
 				# log.debug("%s.lookup cache hit" % str(self))
 				data = json.load(f)
 				for k, v in data.items(): #merge this into ourself
-					setattr(self, k, v)		
+					setattr(self, k, v)
+					
+			# old versions saved chanAttrs but shouldn't, so clear it here.
+			self.chanAttrs = {}
 		except FileNotFoundError:
+			# we don't have a saved .json file for this user,
+			# so we need to fetch their info from Twitch
 			log.debug("%s.lookup cache miss" % str(self))
 			self.lookupAPI()
 			
@@ -131,8 +137,13 @@ class user(object):
 		#	(str(self), "\n\t".join(frames)))
 		path = os.path.join(cachedir, self.nick)
 		#log.debug("%s.save(%s)" % (self, path))
+		
+		# HACK XXX there must be a better way to do this
+		chanAttrs = self.chanAttrs
+		del self.chanAttrs
 		with open(path, 'w') as f:
 			json.dump(self.__dict__, f)
+		self.chanAttrs = chanAttrs
 		log.debug("%s.save OK" % self)
 		
 			
@@ -171,12 +182,8 @@ class user(object):
 	def getMsgType(self, chan, msgtype):
 		if msgtype in msg_hilight_types: # if this msgtype can be hilighted
 			for name, utype in self.getTypes(chan).items():
-				log.debug("User '%s' channel '%s' type '%s'" %
-					(self.nick, chan.name, name))
 				if utype.get('hilight', False):
 					tp = msg_hilight_types[msgtype]
-					log.debug("User '%s' channel '%s' msgtype '%s' -> '%s'" %
-						(self.nick, chan.name, msgtype, tp))
 					return tp
 		return msgtype
 		
@@ -209,20 +216,46 @@ class user(object):
 	# Add user to a channel if they aren't there already.
 	def joinChannel(self, chan):
 		chan = twitch.channel.get(chan)
-		if not chan.name in self.chanAttrs:
-			self.chanAttrs[chan.name] = {
-				"broadcaster": False,
-				"subscriber":  False,
-				"mod":         False,
-			}
+		if chan.name in self.chanAttrs:
+			return
+		
+		log.debug("User '%s' joined channel '%s'" % (self.nick, chan.name))
+		self.chanAttrs[chan.name] = {
+			"broadcaster": False,
+			"subscriber":  False,
+			"mod":         False,
+		}
+		
+		# synthesize a JOIN event to make sure hexchat knows about this user,
+		# so that tab complete and user list will work.
+		seen = False
+		for u in chan.getContext().get_list('users'):
+			if u.nick.lower() == self.nick:
+				seen = True
+				break
+		
+		log.debug("User in userlist: %s" % seen)
+		if not seen:
+			cmd = "RECV :{0}!{0}@{0}.tmi.twitch.tv JOIN #{1}".format(
+				self.nick, chan.name)
+			log.debug(cmd)
+			hexchat.command(cmd)
+		
 		chan.addUser(self)
 		
 		
 	# Remove user from a channel if they're there
 	def leaveChannel(self, chan):
 		chan = twitch.channel.get(chan)
-		if chan.name in self.chanAttrs:
-			del self.chanAttrs[chan.name]
+		if chan.name not in self.chanAttrs:
+			return
+			
+		log.debug("User '%s' left channel '%s'" % (self.nick, chan.name))
+		cmd = "RECV :{0}!{0}@{0}.tmi.twitch.tv PART #{1}".format(
+			self.nick, chan.name)
+		log.debug(cmd)
+		hexchat.command(cmd)
+		del self.chanAttrs[chan.name]
 		chan.removeUser(self)
 		
 	
@@ -242,7 +275,8 @@ class user(object):
 		
 		# create entry for this channel if not existing
 		if chan not in self.chanAttrs:
-			self.chanAttrs[chan] = {}
+			self.joinChannel(chan)
+			#self.chanAttrs[chan] = {}
 		
 		attrs = self.attributes.copy()
 		attrs.update(self.chanAttrs[chan]) # merge
@@ -283,7 +317,14 @@ def get(nick):
 	if type(nick) is user:
 		return nick
 	nick = twitch.normalize.nick(nick)
+	
 	if nick not in users:
+		#stack  = traceback.extract_stack()
+		#frames = []
+		## (filename, line number, function name, text) 
+		#frames.extend(map(lambda f: "{0}:{1}: in '{2}': {3}".format(*f), stack))
+		
+		#log.debug("user.create(%s) from:\n\t%s" % (nick, "\n\t".join(frames)))
 		u = user(nick)
 		users[nick] = u
 	return users[nick]

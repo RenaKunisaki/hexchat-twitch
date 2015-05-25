@@ -28,8 +28,8 @@
     * Check for slow mode, subs-only mode, r9k mode etc when joining
 	* Include these attributes in the `channel` object so they can be shown in topic
   * logger: Be able to emit log events to a context of their own
-* Make tab completion work somehow
-  * Maybe emit `JOIN` events for users we haven't seen before
+  * Don't output HOSTTARGET raw message
+    * Do output the channel URL and #channel to click on in hexchat
 * Better emote handling:
   * If we don't have an emoji for some emote, colour the text differently so it's still clear it's meant to be an emote
     * Refresh user info periodically to check their emote sets
