@@ -199,7 +199,11 @@ def join_cb(word, word_eol, msgtype):
 			return hexchat.EAT_ALL
 		else:
 			user.joinChannel(chan)
-			return hexchat.EAT_NONE
+			if ".twitch.hexchat.please.stop.being.butts" not in word[0]:
+				# eat JOINs that actually come from Twitch
+				return hexchat.EAT_ALL
+			else:
+				return hexchat.EAT_NONE
 	except:
 		log.exception("Unhandled exception in twitch.join_cb(%s)" % str(word))
 		return hexchat.EAT_NONE

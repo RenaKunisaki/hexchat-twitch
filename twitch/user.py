@@ -228,20 +228,10 @@ class user(object):
 		
 		# synthesize a JOIN event to make sure hexchat knows about this user,
 		# so that tab complete and user list will work.
-		seen = False
-		ctxt = chan.getContext()
-		if ctxt:
-			for u in ctxt.get_list('users'):
-				if u.nick.lower() == self.nick:
-					seen = True
-					break
-		
-		log.debug("User in userlist: %s" % seen)
-		if not seen:
-			cmd = "RECV :{0}!{0}@{0}.tmi.twitch.tv JOIN #{1}".format(
-				self.nick, chan.name)
-			log.debug(cmd)
-			hexchat.command(cmd)
+		cmd = "RECV :{0}!{0}@{0}{2}.tmi.twitch.tv JOIN #{1}".format(
+			self.nick, chan.name, ".twitch.hexchat.please.stop.being.butts")
+		log.debug(cmd)
+		hexchat.command(cmd)
 		
 		chan.addUser(self)
 		
