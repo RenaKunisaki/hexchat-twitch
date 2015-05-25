@@ -51,7 +51,7 @@ def update_channels_cb(userdata):
 	try:
 		for name in twitch.channel.channels:
 			chan = twitch.channel.channels[name]
-			if chan.joined:
+			if chan.isJoined():
 				log.debug("Update channel %s" % name)
 				t = threading.Thread(
 					target = update_channel_thread,

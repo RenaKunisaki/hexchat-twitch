@@ -198,6 +198,25 @@ class channel(object):
 		log.info("Left channel '%s'" % self.name)
 		self.joined = False
 		
+		
+	# Check if we're in this channel.
+	# This has to loop through the channel list, because hexchat is dumb
+	# and doesn't provide any reliable way to tell when we close the channel
+	# tab. ('Close Context' event tells us nothing, and Twitch doesn't always
+	# send a PART.)
+	def isJoined(self):
+		for chan in hexchat.get_list('channels'):
+			if '.twitch.tv' in chan.server:
+				if twitch.normalize.channel(chan.channel) == self.name:
+					if not self.joined:
+						log.debug("We're suddenly in channel '%s'" % self.name)
+						self.joined = True
+					return True
+		if self.joined:
+			log.debug("We're apparently no longer in channel '%s'" % self.name)
+			self.joined = False
+		return False
+		
 	
 # channels we know about (name => obj)
 channels = {}
