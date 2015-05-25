@@ -1,11 +1,16 @@
 import twitch.logger, twitch.hooks, twitch.user, twitch.topic, twitch.emotes
-import twitch.settings
+import twitch.settings, twitch.channel
+import hexchat
 
 def run():
 	twitch.settings.load()
 	twitch.hooks.install()
 	twitch.emotes.load()
 	twitch.topic.run()
+	for chan in hexchat.get_list('channels'):
+		if '.twitch.tv' in chan.server:
+			c = twitch.channel.get(chan.channel)
+			c.join()
 	
 def shutdown():
 	twitch.settings.save()
