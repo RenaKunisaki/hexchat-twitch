@@ -229,10 +229,12 @@ class user(object):
 		# synthesize a JOIN event to make sure hexchat knows about this user,
 		# so that tab complete and user list will work.
 		seen = False
-		for u in chan.getContext().get_list('users'):
-			if u.nick.lower() == self.nick:
-				seen = True
-				break
+		ctxt = chan.getContext()
+		if ctxt:
+			for u in chan.getContext().get_list('users'):
+				if u.nick.lower() == self.nick:
+					seen = True
+					break
 		
 		log.debug("User in userlist: %s" % seen)
 		if not seen:
