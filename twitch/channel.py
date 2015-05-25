@@ -109,7 +109,7 @@ class channel(object):
 		try:
 			log.debug("%s.update(): starting", self)
 			data = twitch.api.getChannel(self.name)
-			log.debug("%s.update(): got data: %s", self, data)
+			#log.debug("%s.update(): got data: %s", self, data)
 			self.setAttrsFromAPI(data)
 			log.debug("%s.update(): OK", self)
 			return True
