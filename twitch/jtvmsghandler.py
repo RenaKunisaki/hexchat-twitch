@@ -52,13 +52,10 @@ def HOSTTARGET(channel, param):
 	if dest == '-':
 		chan.emit_print('Server Text', "No longer hosting")
 	else:
+		msg = "Currently hosting http://twitch.tv/%s [ #%s ]" % (dest, dest)
 		if viewers == '-':
-			chan.emit_print('Server Text',
-				("Currently hosting http://twitch.tv/%s [ #%s ], " + \
-				"who is offline.") % (dest, dest))
+			chan.emit_print('Server Text', "%s, who is offline." % msg)
 		else:
-			chan.emit_print('Server Text',
-				"Now hosting http://twitch.tv/%s [ #%s ] for %d viewers" %
-				(dest, dest, viewers))
+			chan.emit_print('Server Text', "%s for %d viewers" % (msg, viewers))
 	return hexchat.EAT_ALL
 	

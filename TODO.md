@@ -23,6 +23,7 @@
   * Notify message when someone you follow goes online
 * More local customization:
   * Be able to edit user attributes locally, such as nick colour, displayed nick, custom badges, etc (per user)
+  * Be able to launch livestreamer for the current channel
 * Better handling of some events:
   * Option to filter out repeated "this room is in slow mode" messages when the slow mode setting hasn't changed
     * Check for slow mode, subs-only mode, r9k mode etc when joining

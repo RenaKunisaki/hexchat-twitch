@@ -231,7 +231,7 @@ class user(object):
 		seen = False
 		ctxt = chan.getContext()
 		if ctxt:
-			for u in chan.getContext().get_list('users'):
+			for u in ctxt.get_list('users'):
 				if u.nick.lower() == self.nick:
 					seen = True
 					break
