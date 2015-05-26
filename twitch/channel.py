@@ -113,7 +113,7 @@ class channel(object):
 			self.setAttrsFromAPI(data)
 			log.debug("%s.update(): OK", self)
 			return True
-		except NetworkFailure:
+		except (NetworkFailure, IOError):
 			log.debug("%s.update: network error", self)
 			return False
 		finally:
