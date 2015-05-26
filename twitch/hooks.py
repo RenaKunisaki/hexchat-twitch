@@ -35,6 +35,7 @@ def privmsg_cb(word, word_eol, msgtype):
 				irc.emit_print(None, 'Server Text', text[1:])
 				return hexchat.EAT_ALL
 			elif "You are banned" in text:
+				chan = twitch.channel.get(chan)
 				if not chan.areWeBanned:
 					chan.areWeBanned = True
 					match = ban_msg_regex.search(text)
