@@ -56,6 +56,6 @@ def HOSTTARGET(channel, param):
 		if viewers == '-':
 			chan.emit_print('Server Text', "%s, who is offline." % msg)
 		else:
-			chan.emit_print('Server Text', "%s for %d viewers" % (msg, viewers))
+			chan.emit_print('Server Text', "%s for %s viewers" % (msg, viewers))
 	return hexchat.EAT_ALL
 	
