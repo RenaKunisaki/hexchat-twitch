@@ -7,6 +7,8 @@ def nick(n):
 	elif type(n) is twitch.channel.channel: # each user has their own channel
 		return n.name
 	else:
+		if len(n) < 1:
+			raise ValueError("Invalid nickname")
 		return hexchat.strip(n).lower()
 	
 def channel(c):
@@ -16,6 +18,8 @@ def channel(c):
 		return c.nick
 	else:
 		c = hexchat.strip(c).lower()
+		if len(c) < 1:
+			raise ValueError("Invalid channel name")
 		if c[0] == '#':
 			c = c[1:]
 		return c
