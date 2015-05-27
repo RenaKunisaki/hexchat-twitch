@@ -80,7 +80,7 @@ class channel(object):
 					log.debug("%s: done" % here)
 					self.updating = False
 					return
-				except (NetworkFailure, IOError):
+				except NetworkFailure:
 					log.debug("%s: network error; retrying" % here)
 					time.sleep(60) # wait and try again.
 				except:
@@ -113,7 +113,7 @@ class channel(object):
 			self.setAttrsFromAPI(data)
 			log.debug("%s.update(): OK", self)
 			return True
-		except (NetworkFailure, IOError):
+		except NetworkFailure:
 			log.debug("%s.update: network error", self)
 			return False
 		finally:

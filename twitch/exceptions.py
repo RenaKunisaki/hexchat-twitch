@@ -3,7 +3,8 @@ import requests
 # exceptions we might get if the network breaks, which we'll deal with somehow
 NetworkFailure = (
 	requests.exceptions.ConnectionError,
-	requests.exceptions.Timeout)
+	requests.exceptions.Timeout,
+	IOError)
 	
 # used when user command has bad/missing parameters
 class BadParameterError(ValueError):
