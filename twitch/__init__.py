@@ -10,8 +10,10 @@ def run():
 	twitch.topic.run()
 	for chan in hexchat.get_list('channels'):
 		if '.twitch.tv' in chan.server:
+			log.info("Reload: in channel '%s'" % chan.channel)
 			c = twitch.channel.get(chan.channel)
-			c.join()
+			if c:
+				c.join()
 	
 def shutdown():
 	twitch.settings.save()

@@ -207,11 +207,17 @@ class channel(object):
 	def isJoined(self):
 		for chan in hexchat.get_list('channels'):
 			if '.twitch.tv' in chan.server:
-				if twitch.normalize.channel(chan.channel) == self.name:
-					if not self.joined:
-						log.debug("We're suddenly in channel '%s'" % self.name)
-						self.joined = True
-					return True
+				try:
+					if twitch.normalize.channel(chan.channel) == self.name:
+						if not self.joined:
+							log.debug("We're suddenly in channel '%s'" %
+								self.name)
+							self.joined = True
+						return True
+				except ValueError as ex:
+					log.warning("channel.isJoined: checking '%s': %s" %
+						(chan.channel, str(ex)))
+					pass
 		if self.joined:
 			log.debug("We're apparently no longer in channel '%s'" % self.name)
 			self.joined = False
@@ -233,7 +239,12 @@ def get(name):
 		c = name.get_info('channel')
 		return get(c)
 	else:
-		name = twitch.normalize.channel(name)
+		try:
+			name = twitch.normalize.channel(name)
+		except ValueError as ex:
+			log.warning("channel.get(%s): %s" % (name, str(ex)))
+			return None
+			
 		if name not in channels:
 			log.debug("Creating channel '%s'" % name)
 			chan = channel(name)
