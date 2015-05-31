@@ -87,8 +87,12 @@ def message_cb(word, word_eol, msgtype):
 			text = ''
 		user = twitch.user.get(nick)
 		chan = twitch.channel.get(hexchat.get_context())
-		user.joinChannel(chan)
-		user.printMessage(chan, text, msgtype)
+		if chan is not None:
+			user.joinChannel(chan)
+			user.printMessage(chan, text, msgtype)
+		else:
+			log.error("Got user message for invalid channel: <%s> %s" %
+				(nick, text))
 		return hexchat.EAT_ALL
 	except:
 		log.exception("Unhandled exception in twitch.message_cb")

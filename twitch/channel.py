@@ -215,8 +215,11 @@ class channel(object):
 							self.joined = True
 						return True
 				except ValueError as ex:
-					log.warning("channel.isJoined: checking '%s': %s" %
-						(chan.channel, str(ex)))
+					# This can happen if we leave a channel, but don't close
+					# the tab. The resulting tab still has the server set, but
+					# with an empty channel name.
+					#log.warning("channel.isJoined: checking '%s': %s" %
+					#	(chan.channel, str(ex)))
 					pass
 		if self.joined:
 			log.debug("We're apparently no longer in channel '%s'" % self.name)
@@ -238,11 +241,13 @@ def get(name):
 	elif "<hexchat.Context object" in str(name): #HACK XXX
 		c = name.get_info('channel')
 		return get(c)
+	elif name is None:
+		raise TypeError("Invalid channel name (%s)" % type(name))
 	else:
 		try:
 			name = twitch.normalize.channel(name)
 		except ValueError as ex:
-			log.warning("channel.get(%s): %s" % (name, str(ex)))
+			log.warning("channel.get('%s'): %s" % (name, str(ex)))
 			return None
 			
 		if name not in channels:
