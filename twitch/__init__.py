@@ -9,7 +9,7 @@ def run():
 	twitch.emotes.load()
 	twitch.topic.run()
 	for chan in hexchat.get_list('channels'):
-		if '.twitch.tv' in chan.server:
+		if ('.twitch.tv' in chan.server) and (chan.channel != ''):
 			log.info("Reload: in channel '%s'" % chan.channel)
 			c = twitch.channel.get(chan.channel)
 			if c:
