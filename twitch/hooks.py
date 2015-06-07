@@ -225,8 +225,34 @@ def chanop_cb(word, word_eol, msgtype):
 # suppress join/part messages
 def joinpart_cb(word, word_eol, msgtype):
 	if twitch.settings.get('mute.joinpart'):
+		log.debug("Muted a join/part message: %s" % str(word))
 		return hexchat.EAT_ALL
 	else:
+		return hexchat.EAT_NONE
+		
+		
+# lowercase channel name before joining, or else we won't get any messages
+def joincmd_cb(word, word_eol, userdata):
+	try:
+		chan = word[1]
+		orig = chan
+		chan = chan.lower()
+		
+		# also handle URLs
+		unslashed = re.search('([^/]+)$', chan)
+		if unslashed: chan = unslashed.group(1)
+		
+		# also handle bare username
+		if chan[0] != '#': chan = '#' + chan
+		log.debug("JOIN(%s) => (%s)", orig, chan)
+		
+		if orig == chan:
+			return hexchat.EAT_NONE
+		else:
+			hexchat.command("JOIN " + chan)
+			return hexchat.EAT_ALL
+	except:
+		log.exception("Unhandled exception in twitch.joincmd_cb(%s)" % cmd)
 		return hexchat.EAT_NONE
 		
 		
@@ -252,3 +278,4 @@ def install():
 	twitch.hook.prnt   ('Channel DeOp',           chanop_cb)
 	twitch.hook.prnt   ('Join',                   joinpart_cb)
 	twitch.hook.prnt   ('Part',                   joinpart_cb)
+	twitch.hook.command('join',                   joincmd_cb)
