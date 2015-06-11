@@ -67,6 +67,20 @@ def privmsg_cb(word, word_eol, msgtype):
 		return hexchat.EAT_NONE
 		
 		
+# handle Twitch WHISPER message
+def whisper_cb(word, word_eol, msgtype):
+	try:
+		nick = twitch.normalize.nick((word[0][1:].split('!')[0]))
+		dest = word[2]
+		msg  = word_eol[3][1:]
+		log.debug("Got WHISPER: %s", word)
+		hexchat.emit_print('Notice', nick, msg)
+	except:
+		log.exception("Unhandled exception in twitch.whisper_cb")
+	finally:
+		return hexchat.EAT_ALL
+		
+		
 # handle Twitch USERSTATE and GLOBALUSERSTATE messages
 def userstate_cb(word, word_eol, msgtype):
 	try:
@@ -317,6 +331,18 @@ def joincmd_cb(word, word_eol, userdata):
 		return hexchat.EAT_NONE
 		
 		
+# handle /w command (whisper)
+def whispercmd_cb(word, word_eol, userdata):
+	try:
+		log.debug("Got /w: %s", word_eol)
+		hexchat.command("PRIVMSG #jtv :/w %s" % word_eol[1])
+		hexchat.emit_print('Message Send', word[1], word_eol[2])
+		return hexchat.EAT_ALL
+	except:
+		log.exception("Unhandled exception in twitch.whispercmd_cb")
+		return hexchat.EAT_ALL
+	
+		
 # Install the hooks
 def install():
 	twitch.hook.server ('376',                    endofmotd_cb)
@@ -327,6 +353,7 @@ def install():
 	twitch.hook.server ('GLOBALUSERSTATE',        userstate_cb)
 	twitch.hook.server ('HOSTTARGET',             hosttarget_cb)
 	twitch.hook.server ('CLEARCHAT',              clearchat_cb)
+	twitch.hook.server ('WHISPER',                whisper_cb)
 	#twitch.hook.server_attrs('RAW LINE',               rawmsg_cb)
 	twitch.hook.prnt   ('Channel Action',         message_cb)
 	twitch.hook.prnt   ('Channel Action Hilight', message_cb)
@@ -347,3 +374,4 @@ def install():
 	twitch.hook.prnt   ('Part',                   joinpart_cb)
 	twitch.hook.command('join',                   joincmd_cb)
 	twitch.hook.prnt   ('Capability Acknowledgement', joinpart_cb)
+	twitch.hook.command('w',                      whispercmd_cb)
