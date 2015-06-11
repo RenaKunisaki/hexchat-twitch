@@ -13,7 +13,7 @@ ban_msg_regex = re.compile(r"for (\d+) more seconds")
 
 # Identify ourselves as Twitch IRC client to get user info
 def endofmotd_cb(word, word_eol, userdata):
-	hexchat.command('QUOTE TWITCHCLIENT 3')
+	hexchat.command('CAP REQ :twitch.tv/tags twitch.tv/commands')
 
 	
 # Ignore various "unknown command" errors
@@ -65,6 +65,40 @@ def privmsg_cb(word, word_eol, msgtype):
 	except:
 		log.exception("Unhandled exception in twitch.privmsg_cb")
 		return hexchat.EAT_NONE
+		
+		
+# handle Twitch USERSTATE and GLOBALUSERSTATE messages
+def userstate_cb(word, word_eol, msgtype):
+	try:
+		log.debug("Got %s msg: %s", GLOBALUSERSTATE, word)
+		# Nothing to do here (except eat the message) until Hexchat adds a
+		# way to read the message's IRCv3 tags.
+		pass
+	except:
+		log.exception("Unhandled exception in twitch.userstate_cb")
+	finally:
+		return hexchat.EAT_ALL
+		
+		
+# handle Twitch HOSTTARGET messages
+# :tmi.twitch.tv HOSTTARGET #renakunisaki :cloakedyoshi -
+def hosttarget_cb(word, word_eol, msgtype):
+	try:
+		param = [word[1], word[2]]
+		return twitch.jtvmsghandler.HOSTTARGET(word[0], param)
+	except:
+		log.exception("Unhandled exception in twitch.hosttarget_cb")
+	finally:
+		return hexchat.EAT_ALL
+
+		
+#def rawmsg_cb(word, word_eol, msgtype, attributes):
+#	try:
+#		log.debug("Got raw msg: %s", word)
+#	except:
+#		log.exception("Unhandled exception in twitch.rawmsg_cb")
+#	finally:
+#		return hexchat.EAT_NONE
 
 
 # message hook to format user messages nicely.
@@ -128,6 +162,7 @@ def youjoin_cb(word, word_eol, msgtype):
 	try:
 		chan = twitch.channel.get(word[1])
 		chan.join()
+		hexchat.command("CAP REQ :twitch.tv/membership")
 		
 		# automatically set up some users
 		jtv = twitch.user.get('jtv')
@@ -231,6 +266,11 @@ def joinpart_cb(word, word_eol, msgtype):
 		return hexchat.EAT_NONE
 		
 		
+# suppress "capabilities acknowledged" messages
+def capack_cb(word, word_eol, msgtype):
+	return hexchat.EAT_ALL
+		
+		
 # lowercase channel name before joining, or else we won't get any messages
 def joincmd_cb(word, word_eol, userdata):
 	try:
@@ -261,6 +301,9 @@ def install():
 	twitch.hook.server ('376',                    endofmotd_cb)
 	twitch.hook.server ('421',                    servererr_cb)
 	twitch.hook.server ('PRIVMSG',                privmsg_cb)
+	twitch.hook.server ('USERSTATE',              userstate_cb)
+	twitch.hook.server ('HOSTTARGET',             hosttarget_cb)
+	#twitch.hook.server_attrs('RAW LINE',               rawmsg_cb)
 	twitch.hook.prnt   ('Channel Action',         message_cb)
 	twitch.hook.prnt   ('Channel Action Hilight', message_cb)
 	twitch.hook.prnt   ('Channel Message',        message_cb)
@@ -279,3 +322,4 @@ def install():
 	twitch.hook.prnt   ('Join',                   joinpart_cb)
 	twitch.hook.prnt   ('Part',                   joinpart_cb)
 	twitch.hook.command('join',                   joincmd_cb)
+	twitch.hook.prnt   ('Capability Acknowledgement', joinpart_cb)

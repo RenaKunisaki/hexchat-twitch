@@ -13,5 +13,8 @@ def prnt(msg, cb): # print is a reserved word
 def server(msg, cb):
 	return hexchat.hook_server(msg, twitchOnly(cb), msg)
 	
+def server_attrs(msg, cb):
+	return hexchat.hook_server_attrs(msg, twitchOnly(cb), msg)
+	
 def timer(timeout, cb):
 	return hexchat.hook_timer(timeout, twitchOnly(cb))
