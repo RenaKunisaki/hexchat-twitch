@@ -32,7 +32,7 @@ def HISTORYEND(channel, param):
 	return hexchat.EAT_ALL
 	
 def CLEARCHAT(channel, param):
-	# someone got the boot, or possibly the channel was cleared?
+	# someone got the boot, or the channel was cleared
 	chan = twitch.channel.get(channel)
 	if len(param) > 0:
 		victim = param[0]
@@ -49,6 +49,10 @@ def HOSTTARGET(channel, param):
 	chan    = twitch.channel.get(channel)
 	dest    = param[0]
 	viewers = param[1]
+	
+	# trim : prefix from IRC
+	if dest[0] == ':': dest = dest[1:]
+	
 	if dest == '-':
 		chan.emit_print('Server Text', "No longer hosting")
 	else:

@@ -70,7 +70,7 @@ def privmsg_cb(word, word_eol, msgtype):
 # handle Twitch USERSTATE and GLOBALUSERSTATE messages
 def userstate_cb(word, word_eol, msgtype):
 	try:
-		log.debug("Got %s msg: %s", msgtype, word)
+		# log.debug("Got %s msg: %s", msgtype, word)
 		# Nothing to do here (except eat the message) until Hexchat adds a
 		# way to read the message's IRCv3 tags.
 		pass
@@ -84,13 +84,30 @@ def userstate_cb(word, word_eol, msgtype):
 # :tmi.twitch.tv HOSTTARGET #renakunisaki :cloakedyoshi -
 def hosttarget_cb(word, word_eol, msgtype):
 	try:
-		param = [word[1], word[2]]
-		return twitch.jtvmsghandler.HOSTTARGET(word[0], param)
+		log.debug("%s %s", msgtype, word)
+		chan  = word[2]
+		param = word[3:]
+		return twitch.jtvmsghandler.HOSTTARGET(chan, param)
 	except:
 		log.exception("Unhandled exception in twitch.hosttarget_cb")
 	finally:
 		return hexchat.EAT_ALL
+		
 
+# handle Twitch CLEARCHAT messages
+# :tmi.twitch.tv CLEARCHAT #darkspinessonic :ishmon
+def clearchat_cb(word, word_eol, msgtype):
+	try:
+		log.debug("%s %s", msgtype, word)
+		if len(word) >= 4: param = [word[3][1:]]
+		else: param = []
+		chan = word[2]
+		# log.debug("Chan = %s, whom = %s", chan, param)
+		return twitch.jtvmsghandler.CLEARCHAT(chan, param)
+	except:
+		log.exception("Unhandled exception in twitch.clearchat_cb")
+	finally:
+		return hexchat.EAT_ALL
 		
 #def rawmsg_cb(word, word_eol, msgtype, attributes):
 #	try:
@@ -309,6 +326,7 @@ def install():
 	twitch.hook.server ('USERSTATE',              userstate_cb)
 	twitch.hook.server ('GLOBALUSERSTATE',        userstate_cb)
 	twitch.hook.server ('HOSTTARGET',             hosttarget_cb)
+	twitch.hook.server ('CLEARCHAT',              clearchat_cb)
 	#twitch.hook.server_attrs('RAW LINE',               rawmsg_cb)
 	twitch.hook.prnt   ('Channel Action',         message_cb)
 	twitch.hook.prnt   ('Channel Action Hilight', message_cb)
