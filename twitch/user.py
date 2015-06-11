@@ -56,13 +56,18 @@ class user(object):
 		self.updatedAt   = None
 		self.logo        = None
 		self.bio         = None
+		
+		# Twitch user type flags
+		# "bot" isn't set by Twitch; this script sets it for some known bots,
+		# and the user can manually set it. It's included here because it's
+		# considered a user type flag and (by default) we have a nick prefix
+		# for it like we do for the others.
 		self.attributes  = {
 			"turbo":      False,
 			"global_mod": False,
 			"staff":      False,
 			"admin":      False,
-			"bot":        False, # not set by Twitch; we set this automatically
-			# for some known bots, and user can set it as well.
+			"bot":        False,
 		}
 		self.chanAttrs = {} # per-channel attributes
 		self.lookup() # get info from API or cache
@@ -71,7 +76,7 @@ class user(object):
 	def __str__(self):
 		return "twitch.user(%s)" % self.nick
 		
-	
+
 	# Look up more info about this user.
 	def lookup(self):
 		data = None
@@ -304,13 +309,15 @@ class user(object):
 # users we know about (nick => obj)
 users = {}
 
-# look up user by nick; create if not existing
-def get(nick):
+# look up user by nick; create if not existing unless create=False
+def get(nick, create=True):
 	if type(nick) is user:
 		return nick
 	nick = twitch.normalize.nick(nick)
 	
 	if nick not in users:
+		if not create:
+			return None
 		#stack  = traceback.extract_stack()
 		#frames = []
 		## (filename, line number, function name, text) 
@@ -320,3 +327,4 @@ def get(nick):
 		u = user(nick)
 		users[nick] = u
 	return users[nick]
+
