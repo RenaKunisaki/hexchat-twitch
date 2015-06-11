@@ -269,6 +269,10 @@ def joinpart_cb(word, word_eol, msgtype):
 # suppress "capabilities acknowledged" messages
 def capack_cb(word, word_eol, msgtype):
 	return hexchat.EAT_ALL
+	
+# suppress "invalid CAP command" caused by Hexchat doing "CAP LS" at startup
+def cmd410_cb(word, word_eol, msgtype):
+	return hexchat.EAT_ALL
 		
 		
 # lowercase channel name before joining, or else we won't get any messages
@@ -299,6 +303,7 @@ def joincmd_cb(word, word_eol, userdata):
 # Install the hooks
 def install():
 	twitch.hook.server ('376',                    endofmotd_cb)
+	twitch.hook.server ('410',                    cmd410_cb)
 	twitch.hook.server ('421',                    servererr_cb)
 	twitch.hook.server ('PRIVMSG',                privmsg_cb)
 	twitch.hook.server ('USERSTATE',              userstate_cb)
