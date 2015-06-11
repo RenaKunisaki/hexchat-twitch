@@ -153,44 +153,7 @@ def show(param, param_eol):
 	else:
 		raise BadParameterError("Unknown entity '%s'" % what)
 
-# map some strings (if not quoted) to values for set command
-valuemap = {
-	"true":  True,
-	"false": False,
-	"none":  None,
-}
 
-
-################################################################################
-@command({
-	"usage"  : "what which attribute value",
-	"desc"   : "set attributes of a user or channel",
-	"example": "set user joe bot true",
-})
-def set(param, param_eol):
-	if len(param) < 4:
-		return showCmdUsage(set)
-	(what, which, attr, value) = param[0:4]
-	
-	# convert value
-	if value[0] == '"':
-		value = value[1:-1] # strip quotes
-	else:
-		if value in valuemap:
-			value = valuemap[value]
-		else:
-			try:
-				value = float(value)
-			except ValueError:
-				pass
-	
-	if what == 'user':
-		user = twitch.user.get(which)
-		user.setAttr(attr, value)
-	else:
-		raise BadParameterError("Unknown entity '%s'" % what)
-		
-		
 ################################################################################
 @command({
 	"usage"    : "emote [set|del|reload|list|show]",
@@ -244,3 +207,33 @@ def emote(param, param_eol):
 })
 def echo(param, param_eol):
 	print(irc.format(twitch.emotes.insert(param_eol[0])))
+	
+	
+################################################################################
+_eval = eval
+@command({
+	"usage"    : "eval expression...",
+	"desc"     : "eval Python expression in twitch module context, for debugging",
+	"minparams": 1,
+})
+def eval(param, param_eol):
+	global _eval
+	try:
+		print(_eval(param_eol[0]))
+	except Exception as ex:
+		print(irc.color('red', 'Error: ' + str(ex)))
+	
+	
+################################################################################
+_exec = exec
+@command({
+	"usage"    : "exec code...",
+	"desc"     : "execute Python code in twitch module context, for debugging",
+	"minparams": 1,
+})
+def exec(param, param_eol):
+	global _exec
+	try:
+		_exec(param_eol[0])
+	except Exception as ex:
+		print(irc.color('red', 'Error: ' + str(ex)))
