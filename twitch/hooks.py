@@ -30,7 +30,10 @@ def privmsg_cb(word, word_eol, msgtype):
 		nick = twitch.normalize.nick((word[0][1:].split('!')[0]))
 		chan = word[2]
 		text = word_eol[3]
-		if nick == 'jtv':
+		if chan == '#jtv' and nick == 'jtv':
+			hexchat.emit_print('Server Text', text[1:])
+			return hexchat.EAT_ALL
+		elif nick == 'jtv':
 			if chan[0] != '#':
 				irc.emit_print(None, 'Server Text', text[1:])
 				return hexchat.EAT_ALL
