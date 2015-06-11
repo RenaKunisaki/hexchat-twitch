@@ -231,10 +231,10 @@ class channel(object):
 channels = {}
 
 
-# look up channel by name or context; create if not existing
+# look up channel by name or context; create if not existing unless create=False
 # if given a channel object, just returns it. so use this to ensure
 # you have a channel object.
-def get(name):
+def get(name, create=True):
 	if type(name) is channel:
 		return name
 	#elif type(name) is hexchat.Context:
@@ -251,6 +251,8 @@ def get(name):
 			return None
 			
 		if name not in channels:
+			if not create:
+				return None
 			log.debug("Creating channel '%s'" % name)
 			chan = channel(name)
 			channels[name] = chan
