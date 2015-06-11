@@ -70,7 +70,7 @@ def privmsg_cb(word, word_eol, msgtype):
 # handle Twitch USERSTATE and GLOBALUSERSTATE messages
 def userstate_cb(word, word_eol, msgtype):
 	try:
-		log.debug("Got %s msg: %s", GLOBALUSERSTATE, word)
+		log.debug("Got %s msg: %s", msgtype, word)
 		# Nothing to do here (except eat the message) until Hexchat adds a
 		# way to read the message's IRCv3 tags.
 		pass
@@ -302,6 +302,7 @@ def install():
 	twitch.hook.server ('421',                    servererr_cb)
 	twitch.hook.server ('PRIVMSG',                privmsg_cb)
 	twitch.hook.server ('USERSTATE',              userstate_cb)
+	twitch.hook.server ('GLOBALUSERSTATE',        userstate_cb)
 	twitch.hook.server ('HOSTTARGET',             hosttarget_cb)
 	#twitch.hook.server_attrs('RAW LINE',               rawmsg_cb)
 	twitch.hook.prnt   ('Channel Action',         message_cb)
