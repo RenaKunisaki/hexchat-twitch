@@ -14,16 +14,21 @@
 	    have emojis for them or not).
   * be able to change the log levels for file/console output
   * better command handling in general
+  
 * More Twitch integration:
+  * WHISPER function: figure out what servers we can use that support this AND actually relay chat messages
   * Ignore people who are on your Twitch account's ignore list
     * Be able to edit that list
 	* Optional notification when someone is ignored
   * Open a PM window when you receive a message on Twitch
     * also look into group/private chat system
   * Notify message when someone you follow goes online
+  * Correctly request specific API version: https://github.com/justintv/twitch-api
+  
 * More local customization:
   * Be able to edit user attributes locally, such as nick colour, displayed nick, custom badges, etc (per user)
   * Be able to launch livestreamer for the current channel
+  
 * Better handling of some events:
   * Option to filter out repeated "this room is in slow mode" messages when the slow mode setting hasn't changed
     * Check for slow mode, subs-only mode, r9k mode etc when joining
@@ -39,6 +44,7 @@
 	* This is probably not a big deal.
 	* Simple fix might be to go through the userlist on load (like we do for the channel list) and mark people as being in the channel, so we don't re-send JOINs for them.
   * Make messages like "Joe just subscribed" and "Joe has been timed out" look different than actions
+  
 * Better emote handling:
   * If we don't have an emoji for some emote, colour the text differently so it's still clear it's meant to be an emote
     * Refresh user info periodically to check their emote sets
