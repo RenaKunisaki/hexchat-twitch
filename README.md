@@ -17,3 +17,7 @@ Twitch.tv chat.
 * Copy the `twitch` directory and `twitch.py` script into your HexChat addons directory (something like `~/.config/hexchat/addons/twitch.py`)
 * Use `/twitch help` until proper documentation is written...
 * This script is still in development, so expect bugs.
+
+# Notes:
+* This script requires Python 3.
+* This script is no longer under development, since Twitch switched to using IRCv3 tags, and Hexchat doesn't expose those to scripts. (Also, the whisper system would require connecting to two servers at once, which is also not really feasible with Hexchat's API.)
